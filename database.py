@@ -12,7 +12,7 @@ def load_jobs_from_db():
         host=os.environ['HOST'],
         password=os.environ['PASSWORD'],
         read_timeout=timeout,
-        port=int(os.environ['PORT']),
+        port=int(os.environ['DB_PORT']),
         user= os.environ['USER'],
         write_timeout=timeout,
     )
