@@ -9,6 +9,7 @@ def hello_world():
     jobs = database.load_jobs_from_db()
     return render_template('home.html', jobs=jobs)
 
+
 @app.route("/jobs")
 def display_jobs():
     jobs = database.load_jobs_from_db()
@@ -19,13 +20,21 @@ def display_jobs():
 def get_overview():
     return render_template('pages/overview.html')
 
+
+@app.route("/jobs/<job_id>")
+def get_job_details(job_id):
+    job_details = database.get_job_details(job_id)
+    return render_template('pages/job_details.html', job_details=job_details)
+
+
 @app.route("/faqs")
 def get_faqs():
     faqs = database.get_faqs_from_db()
     return render_template('pages/faqs.html', faqs=faqs)
-    
+
+
 ##############################################################################
-# Api's 
+# Api's
 ##############################################################################
 @app.route("/api/job")
 def load_job():
@@ -38,6 +47,7 @@ def load_job():
 def list_jobs():
     jobs = database.load_jobs_from_db()
     return jsonify(jobs)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
