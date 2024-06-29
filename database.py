@@ -41,4 +41,5 @@ def get_faqs_from_db():
     return exec_simple_db_queries(query)
     
 if __name__ == "__main__":
-    print(load_jobs_from_db())
+    job_details = get_job_details(2)
+    print(len(job_details))

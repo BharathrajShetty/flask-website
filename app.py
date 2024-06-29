@@ -24,7 +24,11 @@ def get_overview():
 @app.route("/jobs/<job_id>")
 def get_job_details(job_id):
     job_details = database.get_job_details(job_id)
-    return render_template('pages/job_details.html', job_details=job_details)
+    if len(job_details) != 0:
+        return render_template('pages/job_details.html',
+                               job_details=job_details)
+    else:
+        return "Job Not Found", 404
 
 
 @app.route("/faqs")
