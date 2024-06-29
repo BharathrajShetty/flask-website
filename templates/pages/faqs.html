@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <title>FAQs : My Career</title>
+</head>
+<body>
+  {% include 'nav.html' %}
+  <div class="container">
+    <h1 class="mt-2 mb-3">FAQs</h1>
+    <div>
+      If you have any other queries, Please <a href="https://www.google.com">click here</a>.
+    </div>
+    <hr>
+    <ol>
+      {% for faq in faqs %}
+        <div class="shadow-none p-4 m-2 bg-body-tertiary rounded">
+          <li>
+            <div class="mb-2">
+                <b>{{faq['question']}}</b>
+            </div>
+          </li>
+          <ul>
+            {% if faq['response'] != None %}
+              {% for answer in faq['response'].split("\n") %}
+                <li>
+                  <div>
+                    <span>{{answer}}</span>
+                  </div>
+                </li>
+              {% endfor %}
+            {% else %}
+              <span style="color: #bab0af">Waiting for the response</span>
+            {% endif %}
+          </ul>
+        </div>
+      {% endfor %}
+    </ol>
+  </div>
+  {% include 'footer.html' %}
+</body>
+</html>

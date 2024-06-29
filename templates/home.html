@@ -42,23 +42,26 @@
   </style>
 </head>
 <body>
-  {% include 'nav.html' %}
+  {% include 'nav_home.html' %}
   <img id="banner" src="static/head_image.jpg" alt="Not Found" height="100">
   <div id="container">
     <h1 class="mt-2 mb-4">My Career</h1>
-    
-    <h2 class="m-2">About</h2>
-    <p class="bodytext">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p class="bodytext">
+      <h5>Why Choose My Career?</h5>
+      <section>
+          <p class="ms-3">My Career is more than just a job search platform; it's a comprehensive career resource designed to support you at every stage of your professional journey. Whether you're seeking your first job, transitioning to a new industry, or aiming for career advancement, My Career provides the tools, insights, and opportunities you need to succeed.</p>
+    </section>
+      <section>
+          <h5>Get Started Today!</h5>
+          <p class="ms-3">Join thousands of users who have found success with My Career. Sign up with Admin account to add new job openings.</p>
+      </section>
+    </p>
     <h2>Open Positions</h2>
     <div>
       {% for job in jobs %}
         {% include 'jobitem.html' %}
       {% endfor %}
     </div>
-    <div style="text-align:center;">
-      <button class="btn btn-primary btn-lg">Contact Us</button>
-    </div>
-  </div>
   {% include 'footer.html' %}
 </body>
 </html>
