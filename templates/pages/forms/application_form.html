@@ -34,14 +34,14 @@
       <input type="file" name="resume" class="form-control" id="resume" placeholder="Enter your resume" accept=".doc,.docx,.ppt,.pptx,.pdf" required>
     </div>
     <div>
-      <input type="submit" class="btn btn-primary" >
+      <input type="submit" id="formSubmitButton" class="btn btn-primary" value="Verify" >
     </div>
   </form>
 </div>
 
 <script>
   function validateForm() {
-    let doc = document.forms["application-form"] 
+    let doc = document.forms["application-form"]
     if (doc["name"].value.length > 50 ) {
       alert("Length of the candidate name should be less than 50 characters")
       return false
@@ -62,12 +62,16 @@
       alert("Length of the Work Experience should be less than 50 characters")
       return false
     }
-    if (doc["skill"].value.length > 500 ) {
+    if (doc["skills"].value.length > 500 ) {
       alert("Length of the Key Skills should be less than 500 characters")
       return false
     }
     if (doc["notice-period"].value.length > 20 ) {
       alert("Length of the <b>Notice Period</b> should be less than 20 characters")
+      return false
+    }
+    if (document.getElementById("formSubmitButton").value == 'Verify'){
+      document.getElementById("formSubmitButton").value = 'Submit'
       return false
     }
   }
