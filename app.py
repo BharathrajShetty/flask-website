@@ -31,6 +31,12 @@ def get_job_details(job_id):
         return "Job Not Found", 404
 
 
+@app.route("/jobs/<job_id>/apply", methods=['post'])
+def apply_to_job(job_id):
+    data = request.form
+    return data
+
+
 @app.route("/faqs")
 def get_faqs():
     faqs = database.get_faqs_from_db()
