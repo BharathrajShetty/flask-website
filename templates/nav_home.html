@@ -1,17 +1,15 @@
 <header class="p-3 mb-3 border-bottom fixed-top bg-white shadow p-3 mb-5 bg-body-tertiary rounded">
   <div class="container text-start">
-    <div class="row justify-content-between">
-        <div class="col-3">
-          <a href="/" class="nav-link px-2 link-secondary">
-            <button type="button" class="btn btn-secondary">Home</button>
-          </a>
-        </div>
-        <div class="col-9">
+    <div class="row justify-content-end">
+        <div class="col-10">
           <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-end mb-md-0">
             <li><a href="jobs" class="nav-link px-2 link-body-emphasis">Jobs</a></li>
             <li><a href="#" class="nav-link px-2 link-body-emphasis">My Deals</a></li>
             <li><a href="overview" class="nav-link px-2 link-body-emphasis">About</a></li>
-            <li><a href="loginPage" class="nav-link px-2 link-body-emphasis">Login</a></li>
+            <li>
+              <!-- <a href="loginPage" class="nav-link px-2 link-body-emphasis">Profile</a> -->
+              {% include "/pages/profile/userBasedProfile.html" %}
+            </li>
           </ul>
         </div>
           

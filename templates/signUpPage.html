@@ -37,7 +37,7 @@
     h2 {
       color: rgb(100, 100, 100);
     }
-    #loginSubmitButton {
+    #signUpSubmitButton {
       display: flex;
       justify-content: center; /* Centers items horizontally */
       align-items: center; /* Centers items vertically */
@@ -49,25 +49,26 @@
   <div class="container">
     <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="form-page">
       <div>
-        <h2>Login</h2>
+        <h2>Sign Up</h2>
         <div>
-          <form name="loginForm" action="/validateUser" id="loginForm" method="post">
+          <form name="signUpForm" action="/createUser" id="signUpForm" method="post">
             <div class="m-3"">
-              <label for="username" class="loginLabel">User Name</label><br>
-              <input type="text" name="username" class="loginAction" id="userName" placeholder="shebha" required>
+              <label for="fname" class="signUpLabel">First Name</label><br>
+              <input type="text" name="fname" class="signUpAction" id="fName" placeholder="Bharathraj" required>
+            </div>
+            <div class="m-3"">
+              <label for="lname" class="signUpLabel">Last Name</label><br>
+              <input type="text" name="lname" class="signUpAction" id="lName" placeholder="Shetty" required>
             </div>
             <div class="mx-3 mb-1">
-              <label for="password" class="loginLabel" >Password</label> <br>
-              <input type="password" name="password" class="loginAction" id="password" placeholder="********" required>
+              <label for="password" class="signUpLabel" >Password</label> <br>
+              <input type="password" name="password" class="signUpAction" id="password" placeholder="********" required>
             </div>
-            <div class="d-flex justify-content-end">
-              <a href="" style="font-size: 14px">forgot password?</a>
-            </div>
-            <div id="loginSubmitButton">
+            <div id="signUpSubmitButton">
               <input type="submit" class="btn btn-primary mx-4">
             </div>
             <div style="font-size: 14px; margin: 3px">
-              If you don't have an account <a href="signUpPage">click here</a> to create
+              Already have an account <a href="loginPage">click here</a> to sign in.
             </div>
           </form>
         </div>

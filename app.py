@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, session
+from flask import Flask, render_template, jsonify, request, session,redirect, url_for
 import database
 import secrets
 from datetime import timedelta
@@ -12,14 +12,23 @@ app.permanent_session_lifetime = timedelta(days=1)
 def login_page():
     return render_template("loginPage.html")
 
+@app.route("/signUpPage")
+def sign_up_page():
+    return render_template("signUpPage.html")
 
-@app.route("/user", methods=['post'])
+
+@app.route("/logout")
+def logout():
+    session.pop('user_name', None)
+    return redirect(url_for('home_page'))
+    
+@app.route("/validateUser", methods=['post'])
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
     session.permanent = True
     session['user_name'] = username
-    return {'status': 'success', 'user': username}
+    return redirect(url_for('home_page'))
     # user = database.get_user_by_username(username)
     # if user and user["password"] == password:
     #     session["user_id"] = user["id"]
@@ -29,7 +38,7 @@ def login():
 
 
 @app.route("/")
-def hello_world():
+def home_page():
     jobs = database.load_jobs_from_db()
     return render_template('home.html', jobs=jobs)
 
