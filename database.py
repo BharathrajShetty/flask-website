@@ -32,6 +32,10 @@ def load_jobs_from_db():
     query = "SELECT * FROM jobs"
     return exec_simple_db_queries(query)
 
+def get_user_details(user_name):
+    query = f"SELECT * FROM users where user_name = '{user_name}'"
+    return exec_simple_db_queries(query)
+
 def get_job_details(job_id):
     query = f"SELECT * FROM jobs where id = {job_id}"
     return exec_simple_db_queries(query)

@@ -91,6 +91,10 @@ def list_jobs():
     jobs = database.load_jobs_from_db()
     return jsonify(jobs)
 
+@app.route("/api/users/<user_name>")
+def list_users(user_name):
+    user_details = database.get_user_details(user_name)
+    return jsonify(user_details)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
