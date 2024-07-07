@@ -10,13 +10,9 @@ app.permanent_session_lifetime = timedelta(days=1)
 
 @app.route("/loginPage")
 def login_page():
-    email = ""
-    try:
-        email = request.args.get('email')
-    except:
+    email = request.args.get('email')
+    if email is None:
         email = ""
-
-    print(f"email: {email}")
     return render_template("loginPage.html", email=email)
 
 

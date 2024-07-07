@@ -237,7 +237,7 @@
         return false;
       }
       async function getUsers(email) {
-          const response = await fetch('https://9f4ef556-7d85-44e0-8e47-e4e9d8a8f818-00-1hg6h9st994wi.sisko.replit.dev/api/users/'+email);
+          const response = await fetch('/api/users/'+email);
           if (!response.ok) {
               throw new Error('Network response was not ok ' + response.statusText);
           }
@@ -263,7 +263,7 @@
         return false;
       }
       async function getUsersForPhone(phone) {
-          const response = await fetch('https://9f4ef556-7d85-44e0-8e47-e4e9d8a8f818-00-1hg6h9st994wi.sisko.replit.dev/api/users/byPyhone/'+phone);
+          const response = await fetch('/api/users/byPyhone/'+phone);
           if (!response.ok) {
               throw new Error('Network response was not ok ' + response.statusText);
           }
