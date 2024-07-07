@@ -46,6 +46,11 @@ def logout():
     return redirect(url_for('home_page'))
 
 
+@app.route("/myProfile")
+def my_profile():
+    return render_template("pages/myProfile.html")
+
+
 @app.route("/validateUser", methods=['post'])
 def login():
     email = request.form.get("email")
