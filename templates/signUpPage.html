@@ -36,7 +36,7 @@
   <div class="container">
     <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="form-page">
       <div class="insideContainer">
-        {% if session['user_name'] %}
+        {% if session['email'] %}
           <div id="successLogin">
             {% include "/pages/profile/successLogin.html" %}
           </div>
@@ -44,8 +44,17 @@
           <div id="signUpPrompt">
             <h2>Sign Up</h2>
             <div class="m-2">
+              <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; color: red; background-color: yellow">
+                {% with messages = get_flashed_messages() %}  
+                   {% if messages %}
+                         {% for message in messages %}  
+                              <p>{{ message }}</p>  
+                         {% endfor %}  
+                   {% endif %}  
+                {% endwith %} 
+              </div>
               <form name="signUpForm" onsubmit="return finalFormValidation()" action="/createUser" id="signUpForm" method="post">
-                <div class="row" style="display: inline-flex; max-width: 600px">
+                <div class="row" style="display: inline-flex; max-width: 550px">
                   <div class="col signUpLayOut"">
                     <label for="fname" class="signUpLabel">First Name</label><br>
                     <input type="text" name="fname" class="signUpAction" id="fName" placeholder="Bharathraj" required>
@@ -56,7 +65,10 @@
                   </div>
                   <div class="col signUpLayOut">
                     <label for="email" class="signUpLabel">Email</label><br>
-                    <input type="email" name="email" class="signUpAction" id="email" placeholder="bharathraj@gmail.com" required>
+                    <input type="email" name="email" class="signUpAction" id="email" placeholder="bharathraj@gmail.com" onchange="checkAccountExist()" required>
+                    <div id="emailError" class="error-message" style="display: none; color: red; font-size: 10px">
+                      Already an account exist with this email.
+                    </div>
                   </div>
                   <div class="col signUpLayOut">
                     <label for="phone" class="signUpLabel">Phone</label><br>
@@ -66,18 +78,34 @@
                   <div class="col signUpLayOut">
                     <label for="password" class="signUpLabel" >Password</label> <br>
                     <input type="password" onchange="validatePassword()" name="password" class="signUpAction" id="password" placeholder="********" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" id="showPassword1" viewBox="0 0 16 16" onclick="showPassword('password', 'showPassword1', 'hidePassword1')">
+                      <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                      <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-slash-fill" id="hidePassword1" viewBox="0 0 16 16" style="display: none" onclick="hidePassword('password', 'showPassword1', 'hidePassword1')">
+                      <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                      <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+                    </svg>
                     <div id="password-strength-indicator" style="display: none; font-size: 10px; color: red;"></div>
                   </div>
                   <div class="col signUpLayOut">
                     <label for="confirPassword" class="signUpLabel" >Confirm Password</label> <br>
                     <input type="password" onchange="confirmPasswordValidation()" name="confirPassword" class="signUpAction" id="confirmPassword" placeholder="********" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" id="showPassword2" viewBox="0 0 16 16" onclick="showPassword('confirmPassword', 'showPassword2', 'hidePassword2')">
+                      <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                      <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-slash-fill" id="hidePassword2" viewBox="0 0 16 16" style="display: none" onclick="hidePassword('password', 'showPassword2', 'hidePassword2')">
+                      <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                      <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+                    </svg>
                     <div id="confirmPasswordMessage" style="display: none; font-size: 10px; color: red;"></div>
                   </div>
                   <div id="signUpSubmitButton">
-                    <input type="submit" class="btn btn-primary mx-4">
+                    <input type="submit" class="btn btn-primary mx-4" value="SignUp">
                   </div>
                   <div style="font-size: 14px; margin: 3px">
-                    Already have an account <a href="loginPage">click here</a> to sign in.
+                    Already have an account? <a href="loginPage">Sign In</a>
                   </div>
                 </div>
               </form>
@@ -97,21 +125,25 @@
       document.getElementById("password-strength-indicator").style.display = "none"
       if(paswrd.length < 8 || paswrd.length > 12) {
         document.getElementById("password-strength-indicator").style.display = "block"
+        document.getElementById("password-strength-indicator").style.color = "red"
         document.getElementById("password-strength-indicator").innerHTML = "Password must be between 8 and 12 characters"
         return false
       }
       else if(!uppercaseRegex.test(paswrd)){
         document.getElementById("password-strength-indicator").style.display = "block"
+        document.getElementById("password-strength-indicator").style.color = "red"
         document.getElementById("password-strength-indicator").innerHTML = "Password must contain at least one uppercase letter"
         return false
       }
       else if(!lowercaseRegex.test(paswrd)){
         document.getElementById("password-strength-indicator").style.display = "block"
+        document.getElementById("password-strength-indicator").style.color = "red"
         document.getElementById("password-strength-indicator").innerHTML = "Password must contain at least one lowercase letter"
         return false
       }
       else if(!digitRegex.test(paswrd)){
         document.getElementById("password-strength-indicator").style.display = "block"
+        document.getElementById("password-strength-indicator").style.color = "red"
         document.getElementById("password-strength-indicator").innerHTML = "Password must contain at least one digit"
         return false
       }
@@ -125,7 +157,6 @@
 
     function confirmPasswordValidation() {
       if(document.getElementById("confirmPassword").value == ""){
-        console.log("null")
         document.getElementById("confirmPasswordMessage").style.display = "block"
         document.getElementById("confirmPasswordMessage").style.color = "red"
         document.getElementById("confirmPasswordMessage").innerHTML = "Password cannot be empty"
@@ -150,20 +181,22 @@
         var regex = /^[0-9]+$/;
         if(input.length == 10){
           if (regex.test(input)) {
-            document.getElementById("phoneValidator").style.display = "none"
+            return checkPhoneExist()            
           } else {
             document.getElementById("phoneValidator").style.display = "block"
             document.getElementById("phoneValidator").innerHTML = "Phone number should contains only numbers"
+            return false
           }
         }
       else{
         document.getElementById("phoneValidator").style.display = "block"
         document.getElementById("phoneValidator").innerHTML = "Phone number should have exactly 10 digits"
+        return false
       }
     }
     
     function finalFormValidation() {
-      if (validatePassword() && confirmPasswordValidation()){
+      if (validatePassword() && confirmPasswordValidation() && phoneNumberValidation()){
         return true
       }
       else{
@@ -171,6 +204,72 @@
       }
     }
 
+    function showPassword(id1, id2, id3) {
+      if(document.getElementById(id1).type === 'password'){
+        document.getElementById(id1).type = 'text'
+        document.getElementById(id2).style.display = 'none'
+        document.getElementById(id3).style.display = 'inline'
+      }
+    }
+
+    function hidePassword(id1, id2, id3) {
+      if(document.getElementById(id1).type === 'text'){
+        document.getElementById(id1).type = 'password'
+        document.getElementById(id2).style.display = 'inline'
+        document.getElementById(id3).style.display = 'none'
+      }
+    }
+
+    async function checkAccountExist() {
+      const email = document.getElementById('email').value
+      try {
+        const data = await getUsers(email);
+        if (data.length == 0) {
+          document.getElementById('emailError').style.display = "none"
+          return true;
+        }
+        else {
+          document.getElementById('emailError').style.display = "block"
+          return false;
+        }
+      } catch (error) {
+          console.error(error)
+        return false;
+      }
+      async function getUsers(email) {
+          const response = await fetch('https://9f4ef556-7d85-44e0-8e47-e4e9d8a8f818-00-1hg6h9st994wi.sisko.replit.dev/api/users/'+email);
+          if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+      }
+    }
+
+    async function checkPhoneExist() {
+      const phone = document.getElementById('phone').value
+      try {
+        const data = await getUsersForPhone(phone);
+        if (data.length == 0) {
+          document.getElementById('phoneValidator').style.display = "none"
+          return true;
+        }
+        else {
+          document.getElementById('phoneValidator').style.display = "block"
+          document.getElementById('phoneValidator').innerHTML = "Phone number alreay linked with some other account"
+          return false;
+        }
+      } catch (error) {
+          console.error(error)
+        return false;
+      }
+      async function getUsersForPhone(phone) {
+          const response = await fetch('https://9f4ef556-7d85-44e0-8e47-e4e9d8a8f818-00-1hg6h9st994wi.sisko.replit.dev/api/users/byPyhone/'+phone);
+          if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+      }
+    }
   </script>
 </body>
 </html>

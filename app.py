@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, session,redirect, url_for
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for, flash
 import database
 import secrets
 from datetime import timedelta
@@ -10,31 +10,61 @@ app.permanent_session_lifetime = timedelta(days=1)
 
 @app.route("/loginPage")
 def login_page():
-    return render_template("loginPage.html")
+    email = ""
+    try:
+        email = request.args.get('email')
+    except:
+        email = ""
+
+    print(f"email: {email}")
+    return render_template("loginPage.html", email=email)
+
 
 @app.route("/signUpPage")
 def sign_up_page():
     return render_template("signUpPage.html")
 
 
+@app.route("/createUser", methods=["POST"])
+def create_user():
+    fname = request.form.get("fname")
+    lname = request.form.get("lname")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+    password = request.form.get("password")
+    new_user_status = database.addUser(fname, lname, phone, email, password)
+    if new_user_status["status"] == "Success":
+        session["email"] = email
+        session["user_fname"] = fname
+        session["user_lname"] = lname
+        session["user_phone"] = phone
+        return redirect(url_for("home_page"))
+    else:
+        flash(new_user_status["message"], "danger")
+        return redirect(url_for("sign_up_page"))
+
+
 @app.route("/logout")
 def logout():
-    session.pop('user_name', None)
+    session.pop('email', None)
     return redirect(url_for('home_page'))
-    
+
+
 @app.route("/validateUser", methods=['post'])
 def login():
-    username = request.form.get("username")
+    email = request.form.get("email")
     password = request.form.get("password")
-    session.permanent = True
-    session['user_name'] = username
-    return redirect(url_for('home_page'))
-    # user = database.get_user_by_username(username)
-    # if user and user["password"] == password:
-    #     session["user_id"] = user["id"]
-    #     return jsonify({"success": True})
-    # else:
-    #     return jsonify({"success": False, "message": "Invalid username or password"})
+    user = database.get_user_details(email)
+    if password == user[0]["user_password"]:
+        session.permanent = True
+        session["email"] = email
+        session["user_fname"] = user[0]["fname"]
+        session["user_lname"] = user[0]["lname"]
+        session["user_phone"] = user[0]["user_phone"]
+        return redirect(url_for("home_page"))
+    else:
+        flash("Invalid password", "danger")
+        return redirect(url_for("login_page", email=email))
 
 
 @app.route("/")
@@ -91,10 +121,21 @@ def list_jobs():
     jobs = database.load_jobs_from_db()
     return jsonify(jobs)
 
-@app.route("/api/users/<user_name>")
-def list_users(user_name):
-    user_details = database.get_user_details(user_name)
+
+@app.route("/api/users/<email>")
+def list_users(email):
+    user_details = database.get_user_details(email)
     return jsonify(user_details)
+
+
+@app.route("/api/users/byPyhone/<phone>")
+def list_users_by_phone(phone):
+    try:
+        user_details = database.get_user_details_for_phone(phone)
+        return jsonify(user_details)
+    except:
+        return {}
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
