@@ -39,7 +39,11 @@
   </form>
 </div>
 
-<script>
+<div id="loginForApplication" style="display: none">
+  {% include 'pages/forms/login_for_application.html' %}
+</div>
+
+<script> 
   function validateForm() {
     let doc = document.forms["application-form"]
     if (doc["name"].value.length > 50 ) {
@@ -71,6 +75,10 @@
       return false
     }
     if (document.getElementById("formSubmitButton").value == 'Verify'){
+      {% if not session['email'] %}
+        document.getElementById("loginForApplication").style.display = "block"
+        return false;
+      {% endif %}
       document.getElementById("formSubmitButton").value = 'Submit'
       return false
     }

@@ -135,7 +135,25 @@ def list_users_by_phone(phone):
         user_details = database.get_user_details_for_phone(phone)
         return jsonify(user_details)
     except:
-        return {}
+        return []
+
+
+@app.route("/api/createSession", methods=['POST'])
+def create_session():
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
+    user = database.get_user_details(email)
+    if password == user[0]["user_password"]:
+        session.permanent = True
+        session["email"] = email
+        session["user_fname"] = user[0]["fname"]
+        session["user_lname"] = user[0]["lname"]
+        session["user_phone"] = user[0]["user_phone"]
+        print(session)
+        return {"status": 'Success', "message": "Successfully created session"}
+    else:
+        return {"satus": 'Failed', "message": "Invalid password"}
 
 
 if __name__ == "__main__":
