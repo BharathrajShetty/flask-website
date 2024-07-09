@@ -45,6 +45,10 @@ def create_user():
 @app.route("/logout")
 def logout():
     session.pop('email', None)
+    session.pop('user_id', None)
+    session.pop('user_fname', None)
+    session.pop('user_lname', None)
+    session.pop('user_phone', None)
     return redirect(url_for('home_page'))
 
 
@@ -91,13 +95,13 @@ def get_overview():
 @app.route("/jobs/<job_id>")
 def get_job_details(job_id):
     job_details = database.get_job_details(job_id)
+    job_status = ""
     if len(job_details) != 0:
         if "user_id" in list(session.keys()):
             user_id = session["user_id"]
-            job_status = database.get_job_status_for_user(
-                user_id, job_id)[0]["application_status"]
-        else:
-            job_status = "Not Applied"
+            job_status = database.get_job_status_for_user(user_id, job_id)
+            if len(job_status) != 0:
+                job_status = job_status[0]["application_status"]
         return render_template('pages/job_details.html',
                                job_details=job_details,
                                job_status=job_status)

@@ -4,6 +4,7 @@
         margin: 10px 0;
         border: 1px solid transparent;
         border-radius: 4px;
+        animation: fadeInOut 10s forwards;
     }
     .flash-message.success {
         color: #155724;
@@ -15,11 +16,32 @@
         background-color: #f8d7da;
         border-color: #f5c6cb;
     }
+    @keyframes fadeInOut {
+        0% { opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { opacity: 0; }
+    }
 </style>
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="flash-message {{ category }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    <script>
+        window.addEventListener('load', () => {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            setTimeout(() => {
+                    flashMessages.forEach(flashMessage => {
+                        flashMessage.remove('flash-message');
+                });
+            }, 10000);
+        });
+    </script>
+</body>

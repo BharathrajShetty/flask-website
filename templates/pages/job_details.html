@@ -32,6 +32,28 @@
       font-size: 12px;
       color: #8f8e8c;
     }
+
+    .job-status {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 40%;
+      height: 50px;
+      align-content: center;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .Selected {
+      background-color: #28a745;
+    }
+    .Applied {
+      background-color: #ffc107;
+    }
+    .Rejected {
+      background-color: #dc3545;
+    }
   </style>
   
 </head>
@@ -39,8 +61,19 @@
   {% include 'nav.html' %}
   {% include 'pages/flash/flash_message.html' %}
   <div class="mx-2">
-    <h3>{{job_details[0]['job_title']}}</h3>
-    <div class="mb-2">{{job_details[0]['company']}}</div>
+    <div class="d-flex justify-content-between">
+      <div>
+        <h3>{{job_details[0]['job_title']}}</h3>
+        <div class="mb-2">{{job_details[0]['company']}}</div>
+      </div>
+      <div class="job-status {{job_status}}" id="jobStatus">
+        {% if job_status == 'Selected' %}
+          Short-listed
+        {% else %}
+          {{ job_status }}
+        {% endif %}
+      </div>
+    </div>
     <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
@@ -118,13 +151,18 @@
 
   <script>
     function showApplicationForm() {
-      if (document.getElementById('application-form-1').style.display === 'none'){
-        document.getElementById('application-form-1').style.display = 'block';
-        document.getElementById('job-apply-button').innerHTML = 'Hide';
-      }
-      else{
-        document.getElementById("job-apply-button").innerHTML = "Apply"        
-        document.getElementById('application-form-1').style.display = 'none';
+      application_status = "{{job_status}}"
+      if(application_status == ""){
+        if (document.getElementById('application-form-1').style.display === 'none'){
+          document.getElementById('application-form-1').style.display = 'block';
+          document.getElementById('job-apply-button').innerHTML = 'Hide';
+        }
+        else{
+          document.getElementById("job-apply-button").innerHTML = "Apply"        
+          document.getElementById('application-form-1').style.display = 'none';
+        }
+      }else{
+        document.getElementById("job-apply-button").disabled = true
       }
     }
   </script>
