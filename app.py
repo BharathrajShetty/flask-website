@@ -29,11 +29,13 @@ def create_user():
     phone = request.form.get("phone")
     password = request.form.get("password")
     new_user_status = database.addUser(fname, lname, phone, email, password)
+    user = database.get_user_details(email)
     if new_user_status["status"] == "Success":
         session["email"] = email
         session["user_fname"] = fname
         session["user_lname"] = lname
         session["user_phone"] = phone
+        session["user_id"] = user[0]["user_id"]
         return redirect(url_for("home_page"))
     else:
         flash(new_user_status["message"], "danger")
@@ -62,6 +64,7 @@ def login():
         session["user_fname"] = user[0]["fname"]
         session["user_lname"] = user[0]["lname"]
         session["user_phone"] = user[0]["user_phone"]
+        session["user_id"] = user[0]["user_id"]
         return redirect(url_for("home_page"))
     else:
         flash("Invalid password", "danger")
@@ -89,16 +92,69 @@ def get_overview():
 def get_job_details(job_id):
     job_details = database.get_job_details(job_id)
     if len(job_details) != 0:
+        if "user_id" in list(session.keys()):
+            user_id = session["user_id"]
+            job_status = database.get_job_status_for_user(
+                user_id, job_id)[0]["application_status"]
+        else:
+            job_status = "Not Applied"
         return render_template('pages/job_details.html',
-                               job_details=job_details)
+                               job_details=job_details,
+                               job_status=job_status)
     else:
         return "Job Not Found", 404
 
 
-@app.route("/jobs/<job_id>/apply", methods=['post'])
+@app.route("/jobs/<job_id>/apply", methods=["POST"])
 def apply_to_job(job_id):
     data = request.form
-    return data
+    e_email = data['email']
+    e_name = data['name']
+    e_experience = data['experience']
+    e_notice_period = data['notice_period']
+    e_phone = data['phone']
+    e_qualification = data['qualification']
+    e_skills = data['skills']
+    user_email = session["email"]
+    user = database.get_user_details(user_email)
+
+    if len(user) != 0:
+        try:
+            user_id = user[0]["user_id"]
+            job_statuses = database.get_job_status_for_user(user_id, job_id)
+            if len(job_statuses) == 0:
+                application_status = database.add_application(
+                    user_id, job_id, e_email, e_name, e_experience,
+                    e_notice_period, e_phone, e_qualification, e_skills)
+                if application_status['status'] == 'Success':
+                    flash('Successfully sent the application', 'success')
+                else:
+                    flash('Failed to send the application...Please try again',
+                          'error')
+                return redirect(url_for("get_job_details", job_id=job_id))
+            else:
+                for job_status in job_statuses:
+                    if job_status['application_status'] == "Applied":
+                        flash("You have already applied for this job",
+                              "success")
+                        return redirect(
+                            url_for("get_job_details", job_id=job_id))
+                    elif job_status['application_status'] == "Selected":
+                        flash("You are application was already shortlisted",
+                              "success")
+                        return redirect(
+                            url_for("get_job_details", job_id=job_id))
+                    else:
+                        flash("You are application was rejected", "error")
+                        return redirect(
+                            url_for("get_job_details", job_id=job_id))
+
+        except Exception as e:
+            flash('Some internal error..Please try again later', 'error')
+            return redirect(url_for("get_job_details", job_id=job_id))
+    else:
+        flash('Please Re-login and try again', 'error')
+        return redirect(url_for("get_job_details", job_id=job_id))
 
 
 @app.route("/faqs")
@@ -121,6 +177,13 @@ def load_job():
 def list_jobs():
     jobs = database.load_jobs_from_db()
     return jsonify(jobs)
+
+
+@app.route("/api/<job_id>/status")
+def get_job_status_for_user(job_id):
+    user_id = request.args.get('user_id')
+    job_status = database.get_job_status_for_user(user_id, job_id)
+    return jsonify(job_status)
 
 
 @app.route("/api/users/<email>")
@@ -150,6 +213,7 @@ def create_session():
         session["user_fname"] = user[0]["fname"]
         session["user_lname"] = user[0]["lname"]
         session["user_phone"] = user[0]["user_phone"]
+        session["user_id"] = user[0]["user_id"]
         print(session)
         return {"status": 'Success', "message": "Successfully created session"}
     else:
