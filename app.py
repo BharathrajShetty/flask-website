@@ -205,6 +205,16 @@ def list_users_by_phone(phone):
         return []
 
 
+@app.route("/api/jobs/<application_id>/<status>")
+def update_application_status(application_id, status):
+    try:
+        user_details = database.update_application_status(
+            application_id, status)
+        return jsonify(user_details)
+    except Exception as e:
+        return {"satus": "Failed", "message": str(e)}
+
+
 @app.route("/api/createSession", methods=['POST'])
 def create_session():
     data = request.get_json()

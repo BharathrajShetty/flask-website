@@ -48,11 +48,14 @@ def addUser(fname, lname, phone, email, password):
     query = f"INSERT INTO users (fname, lname, user_phone, user_email, user_password) VALUES ('{fname}', '{lname}', '{phone}', '{email}', '{password}');"
     return exec_write_db_queries(query)
 
+
 def get_job_status_for_user(user_id, job_id):
     query = f"SELECT application_status FROM applications WHERE user_id = {user_id} AND job_id = {job_id}"
     return exec_simple_db_queries(query)
-    
-def add_application(user_id, job_id, e_email, e_name, e_experience, e_notice_period, e_phone, e_qualification, e_skills):
+
+
+def add_application(user_id, job_id, e_email, e_name, e_experience,
+                    e_notice_period, e_phone, e_qualification, e_skills):
     query = f"INSERT INTO applications (emp_name, emp_phone, emp_email, emp_qualification, emp_experience, emp_skills, notice_period, user_id, job_id, application_status) VALUES ('{e_name}', '{e_phone}', '{e_email}', '{e_qualification}', '{e_experience}', '{e_skills}', '{e_notice_period}', '{user_id}', {job_id}, 'Applied');"
     return exec_write_db_queries(query)
 
@@ -75,6 +78,11 @@ def get_user_details_for_phone(phone):
 def get_job_details(job_id):
     query = f"SELECT * FROM jobs where id = {job_id}"
     return exec_simple_db_queries(query)
+
+
+def update_application_status(application_id, status):
+    query = f"UPDATE applications SET application_status = '{status}' WHERE application_id = {application_id}"
+    return exec_write_db_queries(query)
 
 
 def get_faqs_from_db():
