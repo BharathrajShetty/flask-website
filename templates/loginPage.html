@@ -108,7 +108,6 @@
       console.log(email)
       try {
         const data = await getUsers(email);
-        console.log(data.length)
         if (data.length == 0) {
           document.getElementById('emailError').style.display = "block"
           return false;

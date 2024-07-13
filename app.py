@@ -87,6 +87,11 @@ def display_jobs():
     return render_template('pages/jobs_page.html', jobs=jobs)
 
 
+@app.route("/myDeals")
+def display_my_deals():
+    return render_template('pages/myDealsPage.html')
+
+
 @app.route("/overview")
 def get_overview():
     return render_template('pages/overview.html')
@@ -232,6 +237,43 @@ def create_session():
         return {"status": 'Success', "message": "Successfully created session"}
     else:
         return {"satus": 'Failed', "message": "Invalid password"}
+
+
+@app.route("/api/myDeals", methods=["GET"])
+def get_my_deals():
+    status = request.args.get('status', default="All")
+    if session.get('user_id') is not None:
+        my_applications = database.load_my_deals_from_db(session['user_id'])
+        my_deals = []
+        for application in my_applications:
+            job_details = database.get_job_details(application["job_id"])
+            if application["application_status"] == status or status == "All":
+                my_deals.append({
+                    "application_id": application["application_id"],
+                    "job_id": application["job_id"],
+                    "job_title": job_details[0]["job_title"],
+                    "location": job_details[0]["location"],
+                    "salary": job_details[0]["salary"],
+                    "job_status": application["application_status"]
+                })
+        if len(my_deals) != 0:
+            return {
+                "status": "Success",
+                "message": "Successfully fetched",
+                "data": my_deals
+            }
+        else:
+            return {
+                "status": "Failed",
+                "message": "No applications found",
+                "data": []
+            }
+    else:
+        return {
+            "staus": "Failed",
+            "message": "Authentication Required",
+            "data": []
+        }
 
 
 if __name__ == "__main__":
