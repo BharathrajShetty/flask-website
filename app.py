@@ -223,14 +223,22 @@ def list_users_by_phone(phone):
         return []
 
 
-@app.route("/api/jobs/<application_id>/<status>")
+@app.route("/api/application/<application_id>/<status>")
 def update_application_status(application_id, status):
-    try:
-        user_details = database.update_application_status(
-            application_id, status)
-        return jsonify(user_details)
-    except Exception as e:
-        return {"satus": "Failed", "message": str(e)}
+    if status == "Selected" or status == "Rejected" or status == "Applied":
+        try:
+            application_details = database.get_application_details(application_id)
+            if(len(application_details) !=0 ):
+                user_details = database.update_application_status(
+                    application_id, status)
+                print(user_details)
+                return jsonify(user_details)
+            else:
+                return {"status": "Failed", "message": "Application not found"}
+        except Exception as e:
+            return {"satus": "Failed", "message": str(e)}
+    else:
+        return {"status": "Failed", "message": "Invalid status"}
 
 
 @app.route("/api/createSession", methods=['POST'])

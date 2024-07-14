@@ -84,6 +84,9 @@ def load_my_deals_from_db(user_id):
     query = f"SELECT * FROM applications WHERE user_id={user_id}"
     return exec_simple_db_queries(query)
 
+def get_application_details(application_id):
+    query = f"SELECT * FROM applications WHERE application_id={application_id}"
+    return exec_simple_db_queries(query)
 
 def update_application_status(application_id, status):
     query = f"UPDATE applications SET application_status = '{status}' WHERE application_id = {application_id}"
