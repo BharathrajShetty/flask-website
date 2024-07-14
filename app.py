@@ -266,6 +266,7 @@ def get_my_deals():
                     "job_id": application["job_id"],
                     "job_title": job_details[0]["job_title"],
                     "location": job_details[0]["location"],
+                    "job_company": job_details[0]["company"],
                     "salary": job_details[0]["salary"],
                     "job_status": application["application_status"]
                 })
