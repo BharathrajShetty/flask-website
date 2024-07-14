@@ -21,6 +21,16 @@ def sign_up_page():
     return render_template("signUpPage.html")
 
 
+@app.route("/signUpWithAdmin")
+def sign_up_with_admin():
+    return render_template("pages/adminSignUp.html")
+
+
+@app.route("/signInWithAdmin")
+def sign_in_with_admin():
+    return render_template("pages/adminSignIn.html")
+
+
 @app.route("/createUser", methods=["POST"])
 def create_user():
     fname = request.form.get("fname")
@@ -100,13 +110,16 @@ def get_overview():
 @app.route("/jobs/<job_id>")
 def get_job_details(job_id):
     job_details = database.get_job_details(job_id)
-    job_status = ""
     if len(job_details) != 0:
+        job_status = ""
         if "user_id" in list(session.keys()):
             user_id = session["user_id"]
             job_status = database.get_job_status_for_user(user_id, job_id)
+            print(job_status)
             if len(job_status) != 0:
                 job_status = job_status[0]["application_status"]
+            else:
+                job_status = ""
         return render_template('pages/job_details.html',
                                job_details=job_details,
                                job_status=job_status)

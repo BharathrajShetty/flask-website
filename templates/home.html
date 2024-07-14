@@ -39,6 +39,12 @@
       margin: 0 auto;
       padding: 5px;
     }
+    #showAllButton {
+      display: flex;
+      justify-content: center; /* Centers items horizontally */
+      align-items: center; /* Centers items vertically */
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
@@ -57,11 +63,22 @@
       </section>
     </p>
     <h2>Open Positions</h2>
-    <div>
+    <div style="margin: 5px;">
       {% for job in jobs %}
-        {% include 'jobitem.html' %}
+        {% if loop.index < 6 %}
+          {% include 'jobitem.html' %}
+        {% elif loop.index == 6 %}
+          <div id="showAllButton" onclick="showAllJobs()">
+            <div class="btn btn-primary">Show All</div>
+          </div>
+        {% endif %}
       {% endfor %}
     </div>
   {% include 'footer.html' %}
 </body>
+  <script>
+    function showAllJobs() {
+      window.location.href = '/jobs'
+    }
+  </script>
 </html>

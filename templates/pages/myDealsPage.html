@@ -37,6 +37,34 @@
         font-family: Roboto;
         color: rgb(100, 100, 100);
       }
+    .job-container {
+      display: block;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+    }
+
+    .job-status {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 40%;
+      height: 50px;
+      align-content: center;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .Selected {
+      background-color: #28a745;
+    }
+    .Applied {
+      background-color: #ffc107;
+    }
+    .Rejected {
+      background-color: #dc3545;
+    }
   </style>
 </head>
 <body>
@@ -84,7 +112,6 @@
       try{
         const data = await getDeals(filter);
         if (data.error) {
-          console.log("error")
           displayError(data.error);
         }
         else if (data['data'].length == 0){
@@ -99,22 +126,31 @@
           content = ``
           for (let i=0; i < data['data'].length; i++){
             job = data['data'][i]
-            console.log(data['data'][0])
              content = content + `
-             <div class="border-bottom row justify-content-between" style="margin-bottom:16px; padding:8px;">
-  <div class="col-8">
-    <h4>`+job['job_title']+`</h4>
-    <div class="mx-2">
-      <div><b>Location: </b>`+job['location']+`</div>
-      <div><b>Salary: </b>`+job['salary']+`</div>
+       <div class="job-container" onclick="showJobDetails(`+job['job_id']+`)">
+         <div class="shadow-lg p-3 mb-2 bg-body-tertiary rounded">
+           <div class="border-bottom row justify-content-between" style="margin-bottom:16px; padding:8px;">
+            <div class="col-8">
+              <h4>`+job['job_title']+`</h4>
+              <div class="mx-2">
+                <div><b>Location: </b>`+job['location']+`</div>
+                <div><b>Salary: </b>`+job['salary']+`</div>
+              </div>
+            </div>
+            <div class="col-4 center-button">
+              <div class="job-status `+job['job_status']+`" id="jobStatus">`
+                if (job['job_status'] == "Selected"){
+                  content = content + `Short-Listed`
+                }
+                else{
+                  content = content + job['job_status']
+                }  
+                content = content +`
+              </div>
+          </div>
+        </div>
       </div>
-    </div>
-  <div class="col-4 center-button">
-    <a href="jobs/`+job['job_id']+`">
-      <button type="button" class="btn btn-outline-primary">Open</button>
-    </a>
-  </div>
-</div>`
+    </div> `
           }
           myDeals.innerHTML = content;
         }
@@ -131,6 +167,10 @@
             throw new Error('Network response was not ok ' + response.statusText);
         }
         return response.json();
+    }
+
+    function showJobDetails(job_id) {
+      window.location.href = 'jobs/' + job_id;
     }
     const filter = document.getElementById('filter').innerText;
     buildMyDealsPage(filter)
